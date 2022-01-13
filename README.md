@@ -1,2 +1,2 @@
 # LCD-Driver-FPGA
-LCD controller, UART controller, FIFO buffer on Verilog (WIP)
+LCD controller(WIP) , UART controller (WIP), FIFO buffer (WIP) on Verilog 
