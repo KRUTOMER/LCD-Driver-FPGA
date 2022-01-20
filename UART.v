@@ -1,18 +1,25 @@
 `timescale 1ns / 100ps
 
-module UART
+module UART_receiver
 #(parameter FREQ = 24_000_000,
             BAUD_RATE = 9600)
 (
-    input wire clk, reset,
+    input wire clk, //reset,
     input wire DATA_serial,
+    
+//    output reg data_bit = 0, 
+  //  output reg data_bit2 = 0,
+   // output reg [2:0] STATE,
+   // output reg [11:0] clk_counter,
+ //   output reg [2:0] bit_index,
+    
     output reg done_tick = 0,
     output wire [7:0] DATA_byte
 
     );
     
 //signal declaration
-reg [10:0] clk_counter = 0;
+reg [11:0] clk_counter = 0;
 reg data_bit, data_bit2;
 reg [2:0] bit_index = 0;
 reg [7:0] byte_bit = 0;
@@ -20,20 +27,13 @@ reg [2:0] STATE = 0;
 
 //dowble register body
 always @(posedge clk)
-  if (reset) begin
-    clk_counter <= 0;
-    data_bit2 <= 0;
-    data_bit <= 0;
-    bit_index <= 0;
-    byte_bit <= 0;
-    STATE <= 0; end
-  else begin
-    clk_counter <= clk_counter;
+  begin
     data_bit2 <= DATA_serial;
     data_bit <= data_bit2;
-    bit_index <= bit_index;
-    byte_bit <= byte_bit;
-    STATE <= STATE; end
+  end
+
+    
+
 
 //state declaration
 localparam [2:0] IDLE = 3'b000,
@@ -75,9 +75,9 @@ always @(posedge clk)
                       end
                       
        DATA_TRANSFER: begin
-                      // receive 9 bit of data
+                      // receive 8 bit of data
                       done_tick <= 0;
-                      bit_index <= 0;
+                      //bit_index <= 0;
                         if (clk_counter < ((FREQ/BAUD_RATE)-1)) begin
                           clk_counter <= clk_counter + 1;  
                           STATE <= DATA_TRANSFER; end
@@ -114,8 +114,3 @@ always @(posedge clk)
   endcase
 end
    
-   
-assign DATA_byte = byte_bit;   
-                                            
-    
-endmodule
