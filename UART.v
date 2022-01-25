@@ -4,7 +4,7 @@ module UART_receiver
 #(parameter FREQ = 24_000_000,
             BAUD_RATE = 9600)
 (
-    input wire clk, //reset,
+    input wire clk,
     input wire DATA_serial,
     
    // output reg data_bit = 0, 
@@ -36,6 +36,9 @@ always @(posedge clk)
     STATE_reg <= STATE_next;
     clk_counter_reg <= clk_counter_next;
     bit_index_reg <= bit_index_next;
+    
+    //byte_bit[bit_index_next] <= data_bit;
+    if (bit_index_next != bit_index_reg) byte_bit <= {data_bit, byte_bit[7:1]};
   end
 
 //state declaration
@@ -83,7 +86,7 @@ always @*
                           STATE_next = DATA_TRANSFER; end
                         else begin
                           clk_counter_next = 0;
-                          byte_bit[bit_index_next] = data_bit;
+                      //    byte_bit[bit_index_next] = data_bit;
                             if (bit_index_next < 7) begin
                               bit_index_next = bit_index_reg + 1;
                               STATE_next = DATA_TRANSFER; end
